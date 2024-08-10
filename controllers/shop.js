@@ -22,15 +22,26 @@ exports.getProducts = (req, res, next) => {
 
 
 exports.getProductDetails = (req,res,next) => {
-  
-  Product.fetchById(req.params.productId,product=>{
-    
+  Product.fetchById(req.params.productId,
+    product => {
+      res.render('shop/product-detail',{
+        product: product,
+        pageTitle: product.title,
+        path: '/products',
+      });
   });
-  res.render('')
 }
 
 
 exports.getCart = (req,res,next) => {
+  res.render('shop/cart',{
+    path: '/cart',
+    pageTitle: 'Your Cart',
+  })
+};
+
+exports.postCart = (req,res,next) => {
+  req.params.productId;
   res.render('shop/cart',{
     path: '/cart',
     pageTitle: 'Your Cart',
