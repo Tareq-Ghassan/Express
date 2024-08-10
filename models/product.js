@@ -30,9 +30,9 @@ module.exports = class Product {
   save() {
     getProductsFromFile(products => {
       if(this.id){
-        const existingProductIndex = products.findIndex(p=> p.id == this.id);
+        const existingProductIndex = products.findIndex(p=> p.id === this.id);
         if(existingProductIndex>=0){
-          const updatedProduct = {...products};
+          const updatedProduct = [...products];
           updatedProduct[existingProductIndex]= this;
           fs.writeFile(p, JSON.stringify(updatedProduct), err => {
             console.log(err);
@@ -57,7 +57,20 @@ module.exports = class Product {
 
   static fetchById(id , cb) {
     getProductsFromFile(products=>{
-      cb(products.find(p=>p.id==id));
+      cb(products.find(p=>p.id === id));
+    });
+  }
+
+  static deleteById(id){
+    getProductsFromFile(products => {
+      const updatedProduct = products.filter(p => p.id !== id);
+      fs.writeFile(p, JSON.stringify(updatedProduct), err => {
+        if (err) {
+          console.log(err);
+        }else{
+          
+        }
+      });
     });
   }
 };

@@ -20,6 +20,11 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect('/');
 }
 
+exports.deleteProduct = (req, res, next) => {
+  Product.deleteById(req.body.productId);
+  res.redirect('/');
+}
+
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
