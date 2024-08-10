@@ -16,7 +16,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl:"https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png",
     //  req.body.imageUrl,
     price:req.body.price,
-    discription: req.body.discription,
+    description: req.body.description,
   });
   product.save();
   res.redirect('/');
