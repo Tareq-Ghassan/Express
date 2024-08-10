@@ -22,7 +22,7 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
   Product.deleteById(req.body.productId);
-  res.redirect('/');
+  res.redirect('/admin/products');
 }
 
 exports.getEditProduct = (req, res, next) => {
