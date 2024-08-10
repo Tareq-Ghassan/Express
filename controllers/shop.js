@@ -21,6 +21,15 @@ exports.getProducts = (req, res, next) => {
 };
 
 
+exports.getProductDetails = (req,res,next) => {
+  
+  Product.fetchById(req.params.productId,product=>{
+    
+  });
+  res.render('')
+}
+
+
 exports.getCart = (req,res,next) => {
   res.render('shop/cart',{
     path: '/cart',
