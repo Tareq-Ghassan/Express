@@ -9,19 +9,18 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  Product.create({
-       title: req.body.title,
-       description: req.body.description,
-       price: req.body.price,
-       imageUrl: 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png'
-    })
-      .then(() =>{
-        res.redirect('/');
-      })
-      .catch(error => {
-        console.error('Error creating product:', error);
-        next(error); // Pass the error to the error-handling middleware
-      });
+  req.user.createProduct({
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+    imageUrl: 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png',
+  }).then(() =>{
+    res.redirect('/');
+  })
+  .catch(error => {
+    console.error('Error creating product:', error);
+    next(error); // Pass the error to the error-handling middleware
+  }); 
 }
 
 exports.deleteProduct = (req, res, next) => {
@@ -44,8 +43,9 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect('/');
   }
-  Product.findByPk(req.params.productId)
-    .then(product=>{
+  req.user.getProducts({where: {id: req.params.productId}})
+    .then(products=>{
+      const product = products[0];
       if (!product) {
         return res.redirect('/');
       }
@@ -85,7 +85,7 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req,res,next) =>{
-    Product.findAll()
+  req.user.getProducts()
       .then(products => {
         res.render('admin/products', {
           prods: products,

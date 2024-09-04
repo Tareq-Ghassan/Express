@@ -23,7 +23,11 @@ const Product = sequelize.define('product',{
   description: {
     type: Sequelize.TEXT,
     allowNull: false,
-  }
+  },
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
 })
 
 module.exports = Product;

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize= require('../helper/database');
 
-const Cart = sequelize.define('cart',{
+const Order = sequelize.define('order',{
     id: {
         type: Sequelize.CHAR(36),
         allowNull: true, // WE are generating the id form database trigger
@@ -10,4 +10,4 @@ const Cart = sequelize.define('cart',{
     },
 });
 
-module.exports = Cart;
+module.exports = Order;

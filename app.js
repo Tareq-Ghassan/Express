@@ -8,6 +8,10 @@ const userController = require('./controllers/user');
 const sequelize = require('./helper/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
+const Order = require('./models/order');
+const OrderItem = require('./models/order-item');
 
 const app = express();
 
@@ -32,6 +36,15 @@ Product.belongsTo(User, {
     onDelete: 'CASCADE',
 });
 User.hasMany(Product);
+User.hasOne(Cart)
+Cart.belongsTo(User);
+Cart.belongsToMany(Product,{through: CartItem});
+Product.belongsToMany(Cart,{through: CartItem});
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product,{through: OrderItem});
+Product.belongsToMany(Order,{through: OrderItem});
+
 
 sequelize.sync()
     .then(() => {
@@ -47,7 +60,14 @@ sequelize.sync()
     })
     .then(user =>{
         console.log('Database synced successfully');
-        console.log(user);
+        return user.getCart().then(cart => {
+            if (!cart) {
+                return user.createCart();
+            }
+            return cart;
+        });
+    })
+    .then(cart =>{
         app.listen(3000);
     })
     .catch(error=>{
