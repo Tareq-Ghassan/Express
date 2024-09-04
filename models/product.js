@@ -1,80 +1,34 @@
-const crypto = require("crypto");
-const fs = require('fs');
-const path = require('path');
+const Sequelize = require('sequelize');
 
-const Cart = require('./cart');
+const sequelize= require('../helper/database');
 
+const Product = sequelize.define('product',{
+  id: {
+    type: Sequelize.CHAR(36),
+    allowNull: true, // WE are generating the id form database trigger
+    primaryKey: true
+  },
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  imageUrl: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  price: {
+    type: Sequelize.DOUBLE,
+    allowNull: false,
+  },
+  description: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+  },
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+})
 
-const p = path.join(
-  path.dirname(process.mainModule.filename),
-  'data',
-  'products.json'
-);
+module.exports = Product;
 
-const getProductsFromFile = cb => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      cb([]);
-    } else {
-      cb(JSON.parse(fileContent));
-    }
-  });
-};
-
-module.exports = class Product {
-  constructor(id, {title,imageUrl,description,price}) {
-    this.id = id;
-    this.title = title;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this.price = price;
-  }
-
-  save() {
-    getProductsFromFile(products => {
-      if(this.id){
-        const existingProductIndex = products.findIndex(p=> p.id === this.id);
-        if(existingProductIndex>=0){
-          const updatedProduct = [...products];
-          updatedProduct[existingProductIndex]= this;
-          fs.writeFile(p, JSON.stringify(updatedProduct), err => {
-            console.log(err);
-          });
-        }else{
-          console.log('Product not found');
-          return;
-        }
-      }else{
-        this.id = crypto.randomUUID();
-        products.push(this);
-        fs.writeFile(p, JSON.stringify(products), err => {
-          console.log(err);
-        });
-      }
-    });
-  }
-
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
-  }
-
-  static fetchById(id , cb) {
-    getProductsFromFile(products=>{
-      cb(products.find(p=>p.id === id));
-    });
-  }
-
-  static deleteById(id){
-    getProductsFromFile(products => {
-      const product = products.filter(p => p.id === id);
-      const updatedProduct = products.filter(p => p.id !== id);
-      fs.writeFile(p, JSON.stringify(updatedProduct), err => {
-        if (err) {
-          console.log(err);
-        }else{
-          Cart.delete(id,product.price);
-        }
-      });
-    });
-  }
-};
