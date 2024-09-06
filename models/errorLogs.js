@@ -1,25 +1,23 @@
-const Sequelize = require('sequelize');
-
-const sequelize = require('../helper/database');
+const getDB = require('../helper/database').getDB;
 
 
-const ErrorLog = sequelize.define('ErrorLog',{
-    id:{
-        type: Sequelize.INTEGER,
-        allowNull:false,
-        primaryKey:true,
-        autoIncrement:true,
-        unique:true,
-    },
-    errorStack:{
-        type: Sequelize.TEXT,
-        allowNull:false,
-    },
-    timestamp:{
-        type: Sequelize.DATE,
-        allowNull:false,
-        defaultValue: Sequelize.NOW,
+class ErrorLog{
+    constructor({errorStack,timestamp}){
+        this.errorStack = errorStack;
+        this.timestamp  = timestamp
     }
-})
+    // Revised static method to accept error details
+    static log(errorDetails) {
+        const db = getDB();
+        return db.collection('errorLogs')
+        .insertOne(errorDetails) // Insert the passed error details
+        .then(result => {
+            console.log('Logged error to database:', result);
+        }).catch(err => {
+            console.log('Failed to log error to database:', err);
+        });
+    }
+
+} 
 
 module.exports = ErrorLog;
