@@ -5,7 +5,7 @@ const MongoClient = mongodb.MongoClient;
 let _db;
 
 const mongoConnect = (cb) =>{
-    MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.uv6ds.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.DB_APP_NAME}`)
+    MongoClient.connect(process.env.MONGO_URI)
     .then(clinet=>{
         console.log('Connected to MongoDB!');
         _db=clinet.db();
