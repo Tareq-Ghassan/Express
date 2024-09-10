@@ -26,7 +26,7 @@ To set up and run the Express Book Shop Web App locally, follow these steps:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/express-book-shop.git
+   git clone https://github.com/Tareq-Ghassan/express-book-shop.git
    cd express-book-shop
    ```
 
