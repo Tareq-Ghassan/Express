@@ -9,12 +9,14 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  req.user.createProduct({
+  new Product({
     title: req.body.title,
     description: req.body.description,
     price: req.body.price,
     imageUrl: 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png',
-  }).then(() =>{
+    userId: req.user
+  }).save()
+  .then(() =>{
     res.redirect('/');
   })
   .catch(error => {
@@ -24,10 +26,7 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.deleteProduct = (req, res, next) => {
-  Product.findByPk(req.body.productId)
-    .then(product=>{
-      return product.destroy();
-    })
+  Product.findByIdAndDelete(req.body.productId)
     .then(result=>{
       console.log('Product deleted:', result);
       res.redirect('/admin/products');
@@ -43,9 +42,8 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect('/');
   }
-  req.user.getProducts({where: {id: req.params.productId}})
-    .then(products=>{
-      const product = products[0];
+ Product.findById(req.params.productId)
+    .then(product=>{
       if (!product) {
         return res.redirect('/');
       }
@@ -64,28 +62,28 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  Product.findByPk(req.body.productId)
-    .then(product => {
-      product.title= req.body.title;
-      product.imageUrl= req.body.imageUrl;
-      product.price= req.body.price;
-      product.description= req.body.description;
-      return product.save();
-  
-    })
-    .then(result => {
-      console.log('Product updated:', result);
-      res.redirect('/');
-    })
-    .catch(error => {
-      console.log(error);
-      next(error);
-    });
-
+  Product.findById(req.body.productId)
+  .then(product => {
+    product.title = req.body.title;
+    product.price = req.body.price;
+    product.description = req.body.description;
+    product.imageUrl = req.body.imageUrl;
+    return product.save();
+  })
+  .then(result => {
+    console.log('Product updated:', result);
+    res.redirect('/');
+  })
+  .catch(error => {
+    console.log(error);
+    next(error);
+  });
 }
 
 exports.getProducts = (req,res,next) =>{
-  req.user.getProducts()
+  Product.find()
+      // .select('title price -_id')
+      // .populate('userId')
       .then(products => {
         res.render('admin/products', {
           prods: products,

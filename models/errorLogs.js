@@ -1,25 +1,16 @@
-const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
 
-const sequelize = require('../helper/database');
+const Schema= mongoose.Schema
 
+const errorLogSchema = new Schema({
+    errorStack : {
+    type : String,
+    required : true
+  },
+  timestamp : {
+    type : Date,
+    required : true
+  },
+});
 
-const ErrorLog = sequelize.define('ErrorLog',{
-    id:{
-        type: Sequelize.INTEGER,
-        allowNull:false,
-        primaryKey:true,
-        autoIncrement:true,
-        unique:true,
-    },
-    errorStack:{
-        type: Sequelize.TEXT,
-        allowNull:false,
-    },
-    timestamp:{
-        type: Sequelize.DATE,
-        allowNull:false,
-        defaultValue: Sequelize.NOW,
-    }
-})
-
-module.exports = ErrorLog;
+module.exports = mongoose.model('ErrorLog',errorLogSchema);

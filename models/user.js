@@ -1,21 +1,66 @@
-const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
 
-const sequelize = require('../helper/database');
+const Schema= mongoose.Schema
 
-const User = sequelize.define('user',{
-    id: {
-        type: Sequelize.INTEGER,
-        allowNull: true, // WE are generating the id form database trigger
-        primaryKey: true
+const userSchema = new Schema({
+    username : {
+        type : String,
+        required : true
     },
-    name: {
-        type: Sequelize.STRING,
-        allowNull: false,
+    email : {
+        type : String,
+        required : true
     },
-    email: {
-        type: Sequelize.STRING,
-        allowNull: false,
+    cart : {
+        items : [
+            {
+                productId : {
+                    type : Schema.Types.ObjectId,
+                    ref : 'Product',
+                    required : true
+                },
+                quantity : {
+                    type : Number,
+                    required : true
+                }
+            }
+        ],
     }
-});
+})
+userSchema.methods.addToCart = function(product) {
+    if (!this.cart) {
+        this.cart = { items: [] };
+    }
+    const cartProductIndex = this.cart.items.findIndex(cp =>{
+       return cp.productId.toString() === product._id.toString()
+    }); 
+    let newQuantity=1;
+    const updatedCartItems = this.cart.items.slice();
+    if(cartProductIndex >= 0){
+        newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+        updatedCartItems[cartProductIndex].quantity= newQuantity;
+    }else{
+        updatedCartItems.push({
+            productId: product._id,
+            quantity: newQuantity
+        });
+    }
+    const updatedCart = {
+        items: updatedCartItems,
+    }
+    this.cart = updatedCart;
+    return this.save()
+}
 
-module.exports = User
+userSchema.methods.deleteCartItem = function(id) {
+    const updatedCartItems = this.cart.items.filter(i => i.productId.toString() !== id.toString());
+    this.cart.items = updatedCartItems;
+    return this.save();
+}
+
+userSchema.methods.clearCart= function() {
+    this.cart = { items: [] };
+    return this.save();
+}
+
+module.exports =  mongoose.model('User',userSchema); 

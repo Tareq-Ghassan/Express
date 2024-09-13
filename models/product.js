@@ -1,34 +1,29 @@
-const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
 
-const sequelize= require('../helper/database');
+const Schema= mongoose.Schema
 
-const Product = sequelize.define('product',{
-  id: {
-    type: Sequelize.CHAR(36),
-    allowNull: true, // WE are generating the id form database trigger
-    primaryKey: true
+const productSchema = new Schema({
+  title : {
+    type : String,
+    required : true
   },
-  title: {
-    type: Sequelize.STRING,
-    allowNull: false,
+  price : {
+    type : Number,
+    required : true
   },
-  imageUrl: {
-    type: Sequelize.STRING,
-    allowNull: false,
+  description : {
+    type : String,
+    required : true
   },
-  price: {
-    type: Sequelize.DOUBLE,
-    allowNull: false,
+  imageUrl : {
+    type : String,
+    required : true
   },
-  description: {
-    type: Sequelize.TEXT,
-    allowNull: false,
-  },
-  userId: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-})
+  userId : {
+    type : Schema.Types.ObjectId,
+    ref : 'User',
+    required : true
+},
+});
 
-module.exports = Product;
-
+module.exports = mongoose.model('Product',productSchema);

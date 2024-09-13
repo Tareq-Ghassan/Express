@@ -1,13 +1,31 @@
-const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
+const product = require('./product');
 
-const sequelize= require('../helper/database');
+const Schema= mongoose.Schema
 
-const Order = sequelize.define('order',{
-    id: {
-        type: Sequelize.CHAR(36),
-        allowNull: true, // WE are generating the id form database trigger
-        primaryKey: true
-    },
+
+const orderSchema = new Schema({
+    products:[{
+        product: {
+            type: Object,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        }
+    }],
+    user: {
+        username: {
+            type: String,
+            required: true
+        },
+        userId: {
+            type: String,
+            required: true,
+            ref: 'User'
+        }
+    }
 });
 
-module.exports = Order;
+module.exports = mongoose.model('Order',orderSchema);

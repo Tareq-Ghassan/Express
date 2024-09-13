@@ -1,8 +1,9 @@
+
 exports.getUser = (User) => {
    return (req, res, next) => {
-        User.findByPk(514634560)
+    User.findById("66e03a194b601683d920c151")
             .then(user =>{
-                req.user = user;
+                req.user = user
                 next();
             })
             .catch(error=>{
