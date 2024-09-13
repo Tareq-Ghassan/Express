@@ -1,12 +1,9 @@
-const ObjectId = require('mongodb').ObjectId;
-const findById = require('../models/user').findById;
-const User = require('../models/user');
 
-exports.getUser = () => {
+exports.getUser = (User) => {
    return (req, res, next) => {
-        findById(new ObjectId("66db03da90289b005a31270d"))
+    User.findById("66e03a194b601683d920c151")
             .then(user =>{
-                req.user =new User(user.username,user.email,user.cart,user._id);
+                req.user = user
                 next();
             })
             .catch(error=>{

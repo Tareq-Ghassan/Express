@@ -8,14 +8,15 @@ exports.get404 = (req, res, next) => {
 // Error handling middleware for 500 errors
 exports.handle500 = (err, req, res, next) => {
     console.error(err.stack); // Log the error stack for debugging
-    ErrorLog.log({
-         errorStack: err.stack,
-          timestamp: new Date()
-         })
-        .then(() => {
+    new ErrorLog({
+        errorStack: err.stack,
+        timestamp: new Date()
+    })
+    .save()
+    .then(() => {
             console.log('Error logged to database');
          })
-        .catch(error =>{
+    .catch(error =>{
             console.error('Failed to log error to database:', error);
         });
     
