@@ -2,7 +2,11 @@ const ErrorLog = require('../models/errorLogs');
 
 // Error handling middleware for 404 errors
 exports.get404 = (req, res, next) => {
-    res.status(404).render('404',{path: '/404',pageTitle: 'Page Not Found'});
+    res.status(404).render('404',{
+        path: '/404',
+        pageTitle: 'Page Not Found',
+        isAuthenticated: req.isLoggedIn
+    });
 }
 
 // Error handling middleware for 500 errors
@@ -22,6 +26,7 @@ exports.handle500 = (err, req, res, next) => {
     
     res.status(500).render('500', { 
         pageTitle: 'Server Error', 
-        path: '/500'
+        path: '/500',
+        isAuthenticated: req.isLoggedIn
     });
 };

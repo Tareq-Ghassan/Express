@@ -10,6 +10,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(error => {
@@ -25,6 +26,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(error => {
@@ -41,6 +43,7 @@ exports.getProductDetails = (req,res,next) => {
         product: product,
         pageTitle: product.title,
         path: '/products',
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(error => {
@@ -56,7 +59,8 @@ exports.getCart = (req,res,next) => {
       res.render('shop/cart',{
         path: '/cart',
         pageTitle: 'Your Cart',
-        products:user.cart.items
+        products:user.cart.items,
+        isAuthenticated: req.isLoggedIn
       })
     })
     .catch(error => {
@@ -71,7 +75,9 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then(result => {
-      res.redirect('/cart');
+      res.redirect('/cart',{
+        isAuthenticated: req.isLoggedIn
+      });
     })
     .catch(error => {
       console.log(error);
@@ -83,7 +89,9 @@ exports.postCart = (req, res, next) => {
 exports.deleteCartItem = (req,res,next) => {
   req.user.deleteCartItem(req.body.productId)
     .then(result => {
-      res.redirect('/cart');
+      res.redirect('/cart',{
+        isAuthenticated: req.isLoggedIn
+      });
     })
     .catch(error => {
       console.log(error);
@@ -114,7 +122,9 @@ exports.postOrder = (req,res,next) => {
     return req.user.clearCart();
   })
   .then(result => {
-    res.redirect('/orders');
+    res.redirect('/orders'),{
+      isAuthenticated: req.isLoggedIn
+    };
   })
   .catch(error => {
     console.log(error);
@@ -131,6 +141,7 @@ exports.getOrders = (req,res,next)=>{
         path: '/orders',
         pageTitle: 'Your Orders',
         orders: orders,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(error => {
