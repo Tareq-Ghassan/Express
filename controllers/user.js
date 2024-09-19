@@ -1,9 +1,12 @@
 
 exports.getUser = (User) => {
    return (req, res, next) => {
-    User.findById("66e03a194b601683d920c151")
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
             .then(user =>{
-                req.user = user
+                req.user = user;
                 next();
             })
             .catch(error=>{
