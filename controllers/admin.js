@@ -5,7 +5,7 @@ exports.getAddProduct = (req, res, next) => {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
       editing: false,
-      isAuthenticated: req.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn
     });
 };
 
@@ -16,11 +16,11 @@ exports.postAddProduct = (req, res, next) => {
     price: req.body.price,
     imageUrl: 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png',
     userId: req.user,
-    isAuthenticated: req.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   }).save()
   .then(() =>{
     res.redirect('/',{
-      isAuthenticated: req.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn
     });
   })
   .catch(error => {
@@ -34,7 +34,7 @@ exports.deleteProduct = (req, res, next) => {
     .then(result=>{
       console.log('Product deleted:', result);
       res.redirect('/admin/products',{
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(error => {
@@ -58,7 +58,7 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(error => {
@@ -80,7 +80,7 @@ exports.postEditProduct = (req, res, next) => {
   .then(result => {
     console.log('Product updated:', result);
     res.redirect('/',{
-      isAuthenticated: req.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn
     });
   })
   .catch(error => {
@@ -98,7 +98,7 @@ exports.getProducts = (req,res,next) =>{
           prods: products,
           pageTitle: 'Admin Products',
           path: '/admin/products',
-          isAuthenticated: req.isLoggedIn
+          isAuthenticated: req.session.isLoggedIn
         });
       })
       .catch(error => {
