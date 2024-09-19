@@ -17,8 +17,9 @@ exports.postLogin = (req, res, next) => {
         if(err){
           console.log(err);
           next(err)
+        } else {
+          res.redirect('/');
         }
-        res.redirect('/');
       })
     })
     .catch(error => {
