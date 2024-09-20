@@ -6,7 +6,7 @@ exports.getUser = (User) => {
     }
     User.findById(req.session.user._id)
             .then(user =>{
-                req.user = user;
+                req.session.user = user;
                 next();
             })
             .catch(error=>{
