@@ -1,14 +1,35 @@
 const Product = require('../models/product');
+const { validationResult } = require('express-validator');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product',{
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
 exports.postAddProduct = (req, res, next) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(422).render('admin/edit-product',{
+      pageTitle: 'Add Product',
+      path: '/admin/edit-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: req.body.title,
+        price: req.body.price,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+      }, 
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
   new Product({
     title: req.body.title,
     description: req.body.description,
@@ -55,6 +76,10 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product, 
+        hasError: false,
+        errorMessage: null,
+        validationErrors: [],
+        validationErrors: errors.array(),
       });
     })
     .catch(error => {
@@ -65,6 +90,24 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(422).render('admin/edit-product',{
+      pageTitle: 'Eddit Product',
+      path: '/admin/edit-product',
+      editing: true,
+      hasError: true,
+      product: {
+        title: req.body.title,
+        price: req.body.price,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        _id: req.body.productId
+      }, 
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
   Product.findById(req.body.productId)
   .then(product => {
     if (product.userId.toString() !== req.session.user._id.toString()) {

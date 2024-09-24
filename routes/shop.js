@@ -7,7 +7,6 @@ const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
 
-// second midleware
 router.get('/',shopController.getIndex);
 
 router.get('/products',shopController.getProducts);
