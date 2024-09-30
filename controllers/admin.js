@@ -66,24 +66,23 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.deleteProduct = (req, res, next) => {
-  Product.findById(req.body.productId)
+  Product.findById(req.params.productId)
     .then(product => {
       if (!product) {
-        return next(new Error('Product not found.'));
+       return res.status(404).json({ message: 'Product Not Found!' });
       }
       fileHelper.deleteFile(product.imageUrl, next);
       return Product.deleteOne({
-        _id: req.body.productId,
+        _id: req.params.productId,
         userId: req.session.user._id
       })
     })
     .then(result => {
       console.log('Product deleted:', result);
-      res.redirect('/admin/products');
+      res.status(200).json({ message: 'Success!' });
     })
     .catch(error => {
-      console.log(error);
-      next(error);
+      res.status(500).json({ message: 'Internal Server Error' });
     });
 
 }
